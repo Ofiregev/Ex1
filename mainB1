@@ -1,0 +1,213 @@
+import csv
+import json
+
+import Ex1
+
+
+class Elevator:
+    def __init__(self, list):
+        self.id = list["_id"]
+        self.speed = list["_speed"]
+        self.minFloor = list["_minFloor"]
+        self.maxFloor = list["_maxFloor"]
+        self.closeTime = list["_closeTime"]
+        self.openTime = list["_openTime"]
+        self.startTime = list["_startTime"]
+        self.stopTime = list["_stopTime"]
+        self.direction = CallList()
+
+
+class Building:
+    def __init__(self, file_name):
+        with open(file_name, 'r') as foo:
+            obj = json.load(foo)
+            self.maxFloor = obj["_maxFloor"]
+            self.minFloor = obj["_minFloor"]
+            list = obj["_elevators"]
+            self.Elevator = []
+            for i in list:
+                self.Elevator.append(Elevator(i))
+            self.expressElevator = fastestelevator(self)
+            self.p = (abs(self.minFloor - self.maxFloor))
+
+
+class Call:
+    def __init__(self, list):
+        self.string = list[0]
+        self.Time = list[1]
+        self.soFloor = list[2]
+        self.desFloor = list[3]
+        self.ignore = list[4]
+        self.elevAllocate = list[5]
+
+
+class CallList:
+    def __init__(self):
+        self.floorsarray = []
+        self.callList = []
+        self.direction = 0
+
+    def add(self, i: int, F: list):
+        self.callList.append(F[i])
+        self.floorsarray.append(int(F[i].soFloor))
+        self.floorsarray.append(int(F[i].desFloor))
+        # self.changeDirection(F[i],self.building)
+
+        if ((int(F[i].desFloor) - int(F[i].soFloor)) > 0):
+            self.direction = 1
+        else:
+            self.direction = -1
+        if (self.direction == 1):
+            self.floorsarray = sorted(self.floorsarray, reverse=True)
+        elif (self.direction == -1):
+            self.floorsarray = sorted(self.floorsarray)
+
+    # def changeDirection(self, call):
+    #     if (call.desFloor == Building.max):
+    #         self.direction = -1
+    #     elif (call.desFloor == b.minFloor):
+    #         self.direction = 1
+    #     else:
+    #         return
+
+    def calculateTime(self, i: int, c: list, elevator: Elevator) -> float:
+        call = c[i]
+        time = ((abs(int(call.soFloor) - int(call.desFloor))) * elevator.speed) + (elevator.openTime * 2) + (
+                elevator.closeTime * 2) + (elevator.startTime + elevator.stopTime)
+
+        return time
+
+    def __str__(self):
+        return self.floorsarray
+
+
+def downcall(i, F):
+    if ((int(F[i].desFloor)) < (int(F[i].soFloor))):
+        return True
+    else:
+        return False
+
+
+def upCall(i, F):
+    if ((int(F[i].desFloor)) > (int(F[i].soFloor))):
+        return True
+    else:
+        return False
+
+
+def Calls(csvfile) -> list:
+    calls1 = []
+    with open(csvfile, "r") as file:
+        reader = csv.reader(file)
+        for i in reader:
+            calls1.append(Call(i))
+
+    return calls1
+
+
+def ElevatorAlo(index, B: Building, F: list):
+    if (floorsdes(index, F)) > (B.p / 2):
+        F[index].elevAllocate = B.expressElevator
+    elif (downcall(index, F) == True):
+            if (Calculate(B.Elevator[0], F[index]) > (abs((float(F[index].Time) - (float(F[index + 1].Time)))))) and (
+                    callonway1(index, F)) and downcall(index + 1, F) == True:
+                for t in B.Elevator:
+                    if (t.direction.direction == -1 or t.direction.direction == 0):
+                        choose = t
+                        F[index].elevAllocate = choose.id
+                        choose.direction.add(index, F)
+                        F[index + 1].elevAllocate = choose.id
+                        choose.direction.add(index, F)
+            else:
+
+                F[index].elevAllocate = B.Elevator[0].id
+                B.Elevator[0].direction.add(index, F)
+                F[index + 1].elevAllocate = B.Elevator[0].id
+    else:
+            for t in B.Elevator:
+                if (t.direction.direction == 1 or t.direction.direction == 0):
+                    if (Calculate(B.Elevator[0], F[index]) > timediff(index, F)) and callonway2(index, F) and upCall(
+                            index + 1,
+                            F) == True:
+                        F[index].elevAllocate = B.Elevator[0].id
+                        F[index + 1].elevAllocate = B.Elevator[0].id
+                    else:
+                       F[index].elevAllocate = B.Elevator[0].id
+                       F[index + 1].elevAllocate = B.Elevator[0].id
+    if(int(F[index].elevAllocate)<0):
+        F[index].elevAllocate=B.Elevator[0].id
+
+
+
+
+def Calculate(elevator: Elevator, call: Call):
+    time = ((abs(int(call.soFloor) - int(call.desFloor))) * elevator.speed) + (elevator.openTime * 2) + (
+            elevator.closeTime * 2) + (elevator.startTime + elevator.stopTime)
+
+    return time
+
+
+def floorsdes(i: int, F: list) -> int:
+    res = abs(int(F[i].soFloor) - int(F[i].desFloor))
+    return res
+
+
+def timediff(i: int, F: list) -> float:
+    res = abs((float(F[i].Time) - (float(F[i + 1].Time))))
+    return res
+
+
+def callonway1(i: int, F: list) -> bool:
+    res = (F[i + 1].soFloor >= F[i].soFloor)
+    if res == True:
+        return True
+    else:
+        return False
+
+
+def callonway2(i: int, F: list) -> bool:
+    res = (F[i + 1].soFloor >= F[i].soFloor)
+    if res == True:
+        return True
+    else:
+        return False
+
+
+def fastestelevator(building):
+    elevators = building.Elevator
+    min = 10000
+    for i in elevators:
+        time = (float)(i.openTime + i.closeTime + i.startTime + i.speed + i.stopTime + i.openTime)
+        if (time < min):
+            min = time
+            res = i
+    return res.id
+
+
+def writeCalls(c):
+    dataCalls = []
+    for k in c:
+        dataCalls.append(k.__dict__.values())
+    with open("outputName.csv", 'w', newline="") as fu:
+        csvwriter = csv.writer(fu)
+        csvwriter.writerows(dataCalls)
+
+
+def main():
+    c = Calls("inputs\Ex1_Calls\Calls_a.csv")
+    b = Building("inputs\Ex1_Buildings\B1.json")
+    i = 0
+    while i < len(c) :
+        if (int(c[i].elevAllocate) != -1):
+            # print(c[i].__dict__)
+            i = i + 1
+        ElevatorAlo(i, b, c)
+        # print(int(c[i].elevAllocate))
+        # for d in b.Elevator:
+        #     print(d.id, "list is", d.direction.__str__())
+        i = i + 1
+    writeCalls(c)
+
+
+if __name__ == '__main__':
+    main()
