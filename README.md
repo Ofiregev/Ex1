@@ -32,7 +32,7 @@ The offline algorithm from ex0:
 
 The idea is based on the Pick-up elevator. We get all the calls and then find the optimal path for every elevator and take all the calls in a range of time at the same action.
 
-Our algorithm works basically on the directions of the elevators and the calls.
+Our algorithm works basically on the time and of the directions of the calls.
 It checks the next call and decides if to allocate the same elevator or send another elevator to the next call,based on a few parameters such as call type,call destination and more. 
 The choice of the specific elevator is based on random choice.
 Also, if the distance between the source floor and the destination floor is bigger than half of the floors in the building then it is allocated to the fastest elevator in the building.
