@@ -27,9 +27,11 @@ Each one has different attributes. the main function of the algorithm is combine
 
 **The algorithm**
 
-At first we tried to think about comlex algorithm that works on the offline elevator  algorithm that we structured in ex.0(attached below) but during the work on this assignment we discovered that it may be complicated because the simulator does not work as planned.
+At first we tried to think about comlex algorithm that works on the offline elevator algorithm that we structured in ex.0(attached below) but during the work on this assignment we discovered that it may be complicated because the simulator does not work as planned.
 The offline algorithm from ex0:
+
 The idea is based on the Pick-up elevator. We get all the calls and then find the optimal path for every elevator and take all the calls in a range of time at the same action.
+
 Our algorithm works basically on the directions of the elevators and the calls.
 It checks the next call and decides if to allocate the same elevator or send another elevator to the next call,based on a few parameters such as call type,call destination and more. 
 The choice of the specific elevator is based on random choice.
