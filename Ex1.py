@@ -175,8 +175,8 @@ def inputs():
         }
     else:
         di = {
-            "buildingName": "inputs\Ex1_Buildings\B2.json",
-            "callsName": "inputs\Ex1_Calls\Calls_b.csv",
+            "buildingName": "B2.json",
+            "callsName": "Calls_b.csv",
             "outputName": "out.csv"
         }
     return di
