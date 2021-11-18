@@ -25,6 +25,10 @@ to do this we create classes for our most important elements in the program:
 Building,Call and Elevator.
 Each one has different attributes. the main function of the algorithm is combine all the attributes and also combine the Auxiliary functions.
 
+**UML**
+![image](https://user-images.githubusercontent.com/92684730/142425851-ff263dcd-9abb-4730-b3c6-bfca34cfcf31.png)
+
+
 **The algorithm**
 
 At first we tried to think about comlex algorithm that works on the offline elevator algorithm that we structured in ex.0(attached below) but during the work on this assignment we discovered that it may be complicated because the simulator does not work as planned.
