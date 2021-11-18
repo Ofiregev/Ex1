@@ -1,6 +1,7 @@
 import csv
 import json
 import random
+import sys
 
 
 class Elevator:
@@ -39,7 +40,7 @@ class Call:
         self.elevAllocate = list[5]
 
 
-def calculateTime( i: int, c: list, elevator: Elevator) -> float:
+def calculateTime(i: int, c: list, elevator: Elevator) -> float:
     call = c[i]
     time = ((abs(int(call.soFloor) - int(call.desFloor))) / elevator.speed) + (elevator.openTime * 2) + (
             elevator.closeTime * 2) + (elevator.startTime + elevator.stopTime)
@@ -64,26 +65,6 @@ def Calculate(elevator: Elevator, call: Call):
     return time
 
 
-def fastest_elevator(building):
-    elevators = building.Elevator
-    min = 10000
-    for i in range(len(elevators) - 1):
-        time = (float)(elevators[i].openTime + elevators[i].closeTime + elevators[i].startTime + 1 / elevators[i].speed)
-        if (time < min):
-            min = time
-            res = i
-    return res
-
-
-def write_calls(c):
-    dataCalls = []
-    for k in c:
-        dataCalls.append(k.__dict__.values())
-    with open("outputName.csv", 'w', newline="") as fu:
-        csvwriter = csv.writer(fu)
-        csvwriter.writerows(dataCalls)
-
-
 def ElevatorAlo(index, B: Building, C: list):
     if (floorsdes(index, C)) > (B.p / 2):
         C[index].elevAllocate = B.expressElevator
@@ -97,8 +78,8 @@ def ElevatorAlo(index, B: Building, C: list):
 
         else:
 
-            curr=chooseElev(B)
-            next=chooseElev(B)
+            curr = chooseElev(B)
+            next = chooseElev(B)
             while (curr == next):
                 curr = chooseElev(B)
                 next = chooseElev(B)
@@ -164,19 +145,60 @@ def floorsdes(i: int, F: list) -> int:
     return res
 
 
-def main():
-    c = Calls("inputs\Ex1_Calls\Calls_d.csv")
-    b = Building("inputs\Ex1_Buildings\B5.json")
-    i = 0
-    while i < len(c)-1:
-        if (int(c[i].elevAllocate) != -1):
-            i = i + 1
-        ElevatorAlo(i, b, c)
+def fastest_elevator(building):
+    elevators = building.Elevator
+    min = 10000
+    res = 0
+    for i in range(len(elevators) - 1):
+        time = (float)(elevators[i].openTime + elevators[i].closeTime + elevators[i].startTime + 1 / elevators[i].speed)
+        if (time < min):
+            min = time
+            res = i
+    return res
 
-        i = i + 1
 
-        write_calls(c)
+def write_calls(c, name):
+    dataCalls = []
+    for k in c:
+        dataCalls.append(k.__dict__.values())
+    with open(name, 'w', newline="") as fu:
+        csvwriter = csv.writer(fu)
+        csvwriter.writerows(dataCalls)
+
+
+def inputs():
+    if len(sys.argv) == 4:
+        di = {
+            "buildingName": sys.argv[1],
+            "callsName": sys.argv[2],
+            "outputName": sys.argv[3]
+        }
+    else:
+        di = {
+            "buildingName": "inputs\Ex1_Buildings\B2.json",
+            "callsName": "inputs\Ex1_Calls\Calls_b.csv",
+            "outputName": "out.csv"
+        }
+    return di
 
 
 if __name__ == '__main__':
-    main()
+    data = inputs()
+    c = Calls(data["callsName"])
+    b = Building(data["buildingName"])
+    i = 0
+    if (len(b.Elevator) == 1):
+        while i < len(c)-1:
+            c[i].elevAllocate = int(0)
+            i = i + 1
+
+    else:
+        j = 0
+        while j < len(c)-1:
+            if (int(c[j].elevAllocate) != -1):
+                j = j + 1
+            ElevatorAlo(j, b, c)
+            j = j + 1
+
+    write_calls(c, data["outputName"])
+
