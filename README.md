@@ -21,11 +21,15 @@ https://www.javastructures.com/design/elevator
 We have a building that contains elevators and a list of calls.
 The main target is to allocate an elevator to each call such that the time that passes from the arriving time to the time that the call went to its destination is the minimum time. 
 In the first assignment we designed an online algorithm to solve the problem. This time we design an offline algorithm.
-to do this we create classes for our most important elements in the program:
+To do this we create classes for our most important elements in the program:
 Building,Call and Elevator.
 Each one has different attributes. the main function of the algorithm is combine all the attributes and also combine the Auxiliary functions.
+In this assignment we used for the first time with json and csv formats, we learned how to read them and how to write them.
 
 **UML**
+
+
+
 ![image](https://user-images.githubusercontent.com/92684730/142425851-ff263dcd-9abb-4730-b3c6-bfca34cfcf31.png)
 
 
