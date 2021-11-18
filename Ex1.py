@@ -1,7 +1,7 @@
 import csv
 import json
-import random
 import sys
+import random
 
 
 class Elevator:
