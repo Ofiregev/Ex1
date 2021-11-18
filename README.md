@@ -7,7 +7,7 @@
 
 https://web.eecs.umich.edu/~baveja/RLMasses/node2.html
 
-The Elevator Problem
+The Elevator Problem:
 
 https://www.researchgate.net/publication/31597314_Multiobjective_Optimization_in_Elevator_Group_Control
 
